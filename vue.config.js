@@ -1,5 +1,7 @@
 module.exports = {
-  filenameHashing: false,
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/shai3-nai1-translator/'
+    : '/',
   css: {
     loaderOptions: {
       scss: {
