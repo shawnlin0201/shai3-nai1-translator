@@ -1,5 +1,5 @@
-# ㄕㄞㄋㄞ翻譯
-這肆一款能江正體中文轉成「Shai3-Nai1」體的翻譯網站。
+# ㄕㄞㄋㄞ翻譯器
+這肆一款能江正體中文轉成「Shai3-Nai1」體的翻譯器。
 想肆肆抗的請點[這尼](https://shawnlin0201.github.io/shai3-nai1-translator/)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/shawnlin0201/shai3-nai1-translator)
