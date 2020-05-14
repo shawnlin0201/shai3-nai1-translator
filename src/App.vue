@@ -103,14 +103,14 @@ export default {
   position:fixed;
   top:0;
   width:100%;
-  font-family: 'Noto_Sans_TC';
-  font-weight: bold;
+  font-family: Helvetica;
+  font-weight: bolder;
   display: flex;
   justify-content: center;
   padding: rem(16px);
   background: $main-dark-color;
   font-size: rem(24px);
-  letter-spacing: rem(4px);
+  letter-spacing: rem(8px);
   color:$main-font-color;
 }
 .page-wrapper {
