@@ -1,0 +1,39 @@
+html,body {
+	font-family: 'Noto Sans TC', default-font-family;
+	height: 100%;
+	position: relative;
+}
+
+a {
+	text-decoration: none;
+	color: inherit
+}
+
+li {
+	list-style-type: none;
+}
+
+button {
+	background:none;
+    border: none;
+    font-family: 'Noto Sans TC', default-font-family;
+}
+
+input {
+	border:0;
+	background: transparent;
+	font-family: 'Noto_Sans_TC';
+	&:focus {
+		outline: 0;
+		border:0;
+	}
+}
+
+textarea {
+	border:0;
+	overflow: hidden;
+	&:focus {
+		outline: 0;
+		border:0;
+	}
+}
