@@ -1,14 +1,28 @@
 <template>
   <div id="app">
     <nav class="navbar-wrapper">
-      <div class="navbar-title">SHAI3-NAI1</div>
+      <div class="navbar-title">塞乃翻譯器</div>
+      <li class="navbar-item-list">
+        <div class="navbar-item">
+          <div class="line-it-button" data-lang="zh_Hant" data-type="share-a" data-ver="3" data-url="https://social-plugins.line.me/zh_TW/how_to_install#lineitbutton" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+        </div>
+        <div class="navbar-item fb-share-button" data-href="https://shawnlin0201.github.io/shai3-nai1-translator/" data-layout="button" data-size="small">
+          <a target="_blank" href="https://shawnlin0201.github.io/shai3-nai1-translator/" class="fb-xfbml-parse-ignore">分享</a>
+        </div>
+        <a class="navbar-item" target="_blank" href="https://github.com/shawnlin0201/shai3-nai1-translator">
+          GitHub
+        </a>
+      </li>
     </nav>
     <section class="page-wrapper">
       <article class="main-wrapper">
         <div class="description">
-          這肆一款能江正體中文轉成「Shai3-Nai1」體的翻譯機。
-          <br><br>
-          娃娃音應該肆一種森活的態度
+          <div>這是一款能將中文翻譯成「Shai3-Nai1」體的翻譯器。</div><br>
+          <div>「Shai3-Nai1」是一種態度，</div><br>
+          <div>「Shai3-Nai1」是一種哲學。</div><br>
+          <div>不知道怎麼跟說著「Shai3-Nai1」體的人溝通嗎？</div><br>
+          <div>想要知道道地的「Shai3-Nai1」體怎麼說嗎？</div><br>
+          <div>快來試試塞乃翻譯機吧！</div>
         </div>
       </article>
       <article class="traslate-wrapper">
@@ -17,12 +31,12 @@
             <div class="block-title">
               正體中文
             </div>
-            <textarea class="block-description" v-model="text">
+            <textarea class="block-description" wrap="physical" v-model="text">
             </textarea>
           </div>
           <div class="block">
             <div class="block-title">
-            「Shai3-Nai1」體
+            經翻譯後的「Shai3-Nai1」體
             </div>
             <div class="block-description" v-html='traslateText'>
             </div>
@@ -30,6 +44,9 @@
         </div>
       </article>
     </section>
+    <footer class="footer-wrapper">
+      Copyright © 2020 ShawnL. All rights reserved
+    </footer>
   </div>
 </template>
 
@@ -40,7 +57,7 @@ export default {
   name: 'App',
   data () {
     return {
-      text: '快來試試。',
+      text: '輸入內容就能即時翻譯，\n快來試試看吧。',
       traslateText: '',
       dictionary: dictionary,
       regex: ''
@@ -69,10 +86,9 @@ export default {
     culcRegex () {
       let newRegex = this.regex
       for (const i in this.dictionary) {
-        newRegex += i
+        newRegex += i + '|'
       }
-      newRegex = newRegex.split('').join('|')
-      this.regex = newRegex
+      this.regex = newRegex + ''
     }
 
   }
@@ -103,15 +119,35 @@ export default {
   position:fixed;
   top:0;
   width:100%;
-  font-family: Helvetica;
+  box-sizing: border-box;
+  font-family: 'Noto_Sans_TC';
   font-weight: bolder;
   display: flex;
-  justify-content: center;
-  padding: rem(16px);
+  justify-content: space-between;
+  align-items: center;
   background: $main-dark-color;
-  font-size: rem(24px);
-  letter-spacing: rem(8px);
   color:$main-font-color;
+  .navbar-title {
+    font-size: rem(24px);
+    padding: rem(18px) rem(24px);
+    letter-spacing: rem(8px);
+    line-height: rem(18px);
+  }
+  .navbar-item-list {
+    display:flex;
+    align-items: center;
+  }
+  .navbar-item {
+    padding: rem(18px) rem(24px);
+    font-size: rem(18px);
+    transition: 0.5s;
+    line-height: rem(18px);
+    cursor: pointer;
+    &:hover {
+      background: $main-darker-color;
+      color: $main-font-dark-color;
+    }
+  }
 }
 .page-wrapper {
   font-family: 'Noto_Sans_TC';
@@ -127,12 +163,13 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items:center;
+  font-size: rem(18px);
   padding:rem(24px) rem(16px);
   height: rem(200px);
   text-align: center;
   color: $main-font-color;
   .description {
-    margin-bottom: rem(24px);
+    margin: rem(24px) 0;
   }
 }
 
@@ -142,23 +179,50 @@ export default {
   .block-wrapper {
     display:flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     .block {
-      width: rem(360px);
+      min-width: rem(200px);
+      max-width: rem(600px);
+      width:100%;
       padding: rem(12px);
+      overflow: hidden;
       .block-title {
         text-align: center;
         padding-bottom: rem(8px);
+        margin-bottom: rem(24px);
       }
       .block-description {
         width:100%;
-        min-height: rem(100px);
+        box-sizing: border-box;
+        min-height: rem(200px);
         background:$second-lightcolor;
         padding: rem(12px);
         color: $main-font-color;
         font-weight: bold;
-        font-size: rem(16px);
+        font-size: rem(18px);
+        line-height: rem(24px);
+      }
+      textarea {
+        width:100%;
+        min-height: rem(200px);
+        box-sizing: border-box;
+        font-family: 'Noto_Sans_TC';
       }
     }
   }
+}
+
+.footer-wrapper {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  font-family: Helvetica;
+  font-weight: bolder;
+  display: flex;
+  justify-content: center;
+  padding: rem(8px);
+  background: $main-darker-color;
+  font-size: rem(16px);
+  color:$main-font-dark-color;
 }
 </style>
