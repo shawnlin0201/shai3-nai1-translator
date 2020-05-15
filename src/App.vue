@@ -2,9 +2,17 @@
   <div id="app">
     <nav class="navbar-wrapper">
       <div class="navbar-title">塞乃翻譯器</div>
-      <a class="navbar-item" target="_blank" href="https://github.com/shawnlin0201/shai3-nai1-translator">
-        GitHub
-      </a>
+      <li class="navbar-item-list">
+        <div class="navbar-item">
+          <div class="line-it-button" data-lang="zh_Hant" data-type="share-a" data-ver="3" data-url="https://social-plugins.line.me/zh_TW/how_to_install#lineitbutton" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+        </div>
+        <div class="navbar-item fb-share-button" data-href="https://shawnlin0201.github.io/shai3-nai1-translator/" data-layout="button" data-size="small">
+          <a target="_blank" href="https://shawnlin0201.github.io/shai3-nai1-translator/" class="fb-xfbml-parse-ignore">分享</a>
+        </div>
+        <a class="navbar-item" target="_blank" href="https://github.com/shawnlin0201/shai3-nai1-translator">
+          GitHub
+        </a>
+      </li>
     </nav>
     <section class="page-wrapper">
       <article class="main-wrapper">
@@ -124,6 +132,10 @@ export default {
     padding: rem(18px) rem(24px);
     letter-spacing: rem(8px);
     line-height: rem(18px);
+  }
+  .navbar-item-list {
+    display:flex;
+    align-items: center;
   }
   .navbar-item {
     padding: rem(18px) rem(24px);
