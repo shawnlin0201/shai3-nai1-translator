@@ -4,7 +4,7 @@
       <div class="navbar-title">塞乃翻譯器</div>
       <li class="navbar-item-list">
         <div class="navbar-item">
-          <div class="line-it-button" data-lang="zh_Hant" data-type="share-a" data-ver="3" data-url="https://social-plugins.line.me/zh_TW/how_to_install#lineitbutton" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+          <div class="line-it-button" data-lang="zh_Hant" data-type="share-a" data-ver="3" data-url="https://shawnlin0201.github.io/shai3-nai1-translator/" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
         </div>
         <div class="navbar-item fb-share-button" data-href="https://shawnlin0201.github.io/shai3-nai1-translator/" data-layout="button" data-size="small">
           <a target="_blank" href="https://shawnlin0201.github.io/shai3-nai1-translator/" class="fb-xfbml-parse-ignore">分享</a>
