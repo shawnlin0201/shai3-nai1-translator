@@ -29,17 +29,24 @@
         <div class="block-wrapper">
           <div class="block">
             <div class="block-title">
-              正體中文
+              選擇語言：
+              <span class="lang" :class="{'active': lang === 'zh-tw'}" @click="lang = 'zh-tw'">正體中文</span>
+              <span class="lang" :class="{'active': lang === 'wyw'}"  @click="lang = 'wyw'">文言文</span>
             </div>
-            <textarea class="block-description" wrap="physical" v-model="text">
+            <textarea class="block-description" wrap="physical" v-model="text" placeholder="輸入內容，點選翻譯，立刻學習「Shai3-Nai1」體！">
             </textarea>
           </div>
           <div class="block">
             <div class="block-title">
-            經翻譯後的「Shai3-Nai1」體
+            「Shai3-Nai1」體：
             </div>
-            <div class="block-description" v-html='traslateText'>
+            <div class="block-description" v-html='traslateText ? traslateText : "輸入內容～點選翻譯～立刻鞋習「Shai3-Nai1」體！♥"'>
             </div>
+          </div>
+        </div>
+        <div class="block-wrapper">
+          <div class="button-translate" @click="lang === 'zh-tw' ? translate() : wywTranslate()">
+            翻譯
           </div>
         </div>
       </article>
@@ -52,28 +59,25 @@
 
 <script>
 import dictionary from './../src/assets/dictionary/zh-tw.json'
+import axios from 'axios'
 
 export default {
   name: 'App',
   data () {
     return {
-      text: '輸入內容就能即時翻譯，\n快來試試看吧。',
+      text: '',
       traslateText: '',
       dictionary: dictionary,
-      regex: ''
+      regex: '',
+      lang: 'zh-tw'
     }
   },
   mounted () {
     this.culcRegex()
-    this.translate()
-  },
-  watch: {
-    text () {
-      this.translate()
-    }
   },
   methods: {
     translate () {
+      console.log('enter')
       const regex = new RegExp(this.regex, 'g')
       let newText = String(this.text)
 
@@ -82,6 +86,39 @@ export default {
         .replace(/\n/g, '<br>')
 
       this.traslateText = newText
+    },
+    wywTranslate () {
+      this.traslateText = '文言文翻譯中...'
+      const cors = 'https://cors-anywhere.herokuapp.com/'
+      const url = 'https://app.gumble.pw/wenyan/'
+
+      const params = new URLSearchParams()
+      params.append('input', '涸轍遺鮒，旦暮成枯；人而無志，與彼何殊。')
+      params.append('lang', 'c2m')
+
+      axios.post(`${cors}${url}`, params)
+        .then(res => {
+          const result = res.data
+            .replace(/\r?\n|\r/g, '')
+            .match(/<\s*article[^>]*>(.*?)<\s*\/\s*article>/)[1]
+            .replace('<p>', '')
+            .replace('</p>', '')
+            .replace(/<span>/g, '')
+            .replace(/<\/span>/g, '')
+
+          const regex = new RegExp(this.regex, 'g')
+          let newText = String(result)
+
+          newText = newText
+            .replace(regex, matched => this.dictionary[matched])
+            .replace(/\n/g, '<br>')
+
+          this.traslateText = newText
+        })
+        .catch(err => {
+          this.traslateText = '文言文伺服器繁忙中～請稍後再試試！♥'
+          console.error(err)
+        })
     },
     culcRegex () {
       let newRegex = this.regex
@@ -187,9 +224,21 @@ export default {
       padding: rem(12px);
       overflow: hidden;
       .block-title {
-        text-align: center;
+        text-align: left;
         padding-bottom: rem(8px);
         margin-bottom: rem(24px);
+        .lang {
+          padding: rem(4px) rem(8px);
+          border: rem(2px) solid $main-font-color;
+          border-radius: rem(4px);
+          margin-right: rem(4px);
+          transition: 0.5s;
+          font-weight: normal;
+          &.active {
+            color: white;
+            background: $main-font-color;
+          }
+        }
       }
       .block-description {
         width:100%;
@@ -211,7 +260,17 @@ export default {
     }
   }
 }
-
+.button-translate {
+  padding: rem(8px) rem(16px);
+  border: rem(2px) solid $main-font-color;
+  border-radius: rem(4px);
+  margin-right: rem(4px);
+  transition: 0.5s;
+  font-weight: normal;
+  color: white;
+  background: $main-font-color;
+  cursor: pointer;
+}
 .footer-wrapper {
   position:fixed;
   bottom:0;
