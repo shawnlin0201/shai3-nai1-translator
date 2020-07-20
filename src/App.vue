@@ -93,7 +93,7 @@ export default {
       const url = 'https://app.gumble.pw/wenyan/'
 
       const params = new URLSearchParams()
-      params.append('input', '涸轍遺鮒，旦暮成枯；人而無志，與彼何殊。')
+      params.append('input', this.text)
       params.append('lang', 'c2m')
 
       axios.post(`${cors}${url}`, params)
