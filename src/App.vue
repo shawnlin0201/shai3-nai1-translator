@@ -26,7 +26,7 @@
         </div>
       </article>
       <article class="traslate-wrapper">
-        <div class="block-wrapper">
+        <div class="block-wrapper justify-space-around">
           <div class="block">
             <div class="block-title">
               選擇語言：
@@ -44,9 +44,12 @@
             </div>
           </div>
         </div>
-        <div class="block-wrapper">
-          <div class="button-translate" @click="lang === 'zh-tw' ? translate() : wywTranslate()">
-            翻譯
+        <div class="block-wrapper justify-center">
+          <div class="button-translate" @click="speakLang = 'Japan';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
+            翻譯，並用日文發音
+          </div>
+          <div class="button-translate" @click="speakLang = 'Chinese';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
+            翻譯，並用中文發音
           </div>
         </div>
       </article>
@@ -65,17 +68,55 @@ export default {
   name: 'App',
   data () {
     return {
+      speakLang: 'Chinese',
       text: '',
       traslateText: '',
       dictionary: dictionary,
       regex: '',
-      lang: 'zh-tw'
+      lang: 'zh-tw',
+      voice: ''
     }
   },
   mounted () {
     this.culcRegex()
+    window.speechSynthesis.addEventListener('voiceschanged', this.getSpeechVoice)
+  },
+  destroyed () {
+    window.speechSynthesis.removeEventListener('voiceschanged', this.getSpeechVoice)
   },
   methods: {
+    speakText () {
+      const utterance = new SpeechSynthesisUtterance()
+      const text = this.traslateText.replace(/[～|！|♥|？]/g, '')
+      utterance.voice = this.voice
+      utterance.text = text || ''
+      utterance.lang = 'zh-TW'
+      utterance.pitch = 1
+      utterance.rate = 1
+      utterance.volume = 1
+      window.speechSynthesis.cancel()
+      window.speechSynthesis.speak(utterance)
+    },
+    getSpeechVoice (e) {
+      let voices
+      if (e) {
+        voices = e.target.getVoices()
+      } else {
+        voices = window.speechSynthesis.getVoices()
+      }
+
+      switch (this.speakLang) {
+        case 'Japan':
+          this.voice = voices.find(voice => voice.voiceURI === 'Google 日本語')
+          break
+        case 'Chinese':
+          this.voice = voices.find(voice => voice.voiceURI === 'Google 國語（臺灣）')
+          break
+        default:
+          this.voice = voices.find(voice => voice.voiceURI === 'Google 國語（臺灣）')
+          break
+      }
+    },
     translate () {
       console.log('enter')
       const regex = new RegExp(this.regex, 'g')
@@ -86,6 +127,7 @@ export default {
         .replace(/\n/g, '<br>')
 
       this.traslateText = newText
+      this.speakText()
     },
     wywTranslate () {
       this.traslateText = '文言文翻譯中...'
@@ -114,6 +156,7 @@ export default {
             .replace(/\n/g, '<br>')
 
           this.traslateText = newText
+          this.speakText()
         })
         .catch(err => {
           this.traslateText = '文言文伺服器繁忙中～請稍後再試試！♥'
@@ -215,8 +258,13 @@ export default {
   padding:rem(24px) rem(16px);
   .block-wrapper {
     display:flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    &.justify-space-around {
+      justify-content: space-around;
+    }
+    &.justify-center {
+      justify-content: center;
+    }
     .block {
       min-width: rem(200px);
       max-width: rem(600px);
