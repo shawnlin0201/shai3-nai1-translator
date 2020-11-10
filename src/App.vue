@@ -17,10 +17,10 @@
     <section class="page-wrapper">
       <article class="main-wrapper">
         <div class="description">
-          <div>這是一款能將中文翻譯成「Shai3-Nai1」體的翻譯器。</div><br>
           <div>「Shai3-Nai1」是一種態度，</div><br>
           <div>「Shai3-Nai1」是一種哲學。</div><br>
           <div>不知道怎麼跟說著「Shai3-Nai1」體的人溝通嗎？</div><br>
+          <div>這是一款能將中文、文言文翻譯成「Shai3-Nai1」體的翻譯器。</div><br>
           <div>想要知道道地的「Shai3-Nai1」體怎麼說嗎？</div><br>
           <div>快來試試塞乃翻譯機吧！</div>
         </div>
@@ -45,12 +45,19 @@
           </div>
         </div>
         <div class="block-wrapper justify-center">
-          <div class="button-translate" @click="speakLang = 'Japan';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
+          <div class="button" @click="speakLang = 'Japan';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
             翻譯，並用日文發音
           </div>
-          <div class="button-translate" @click="speakLang = 'Chinese';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
+          <div class="button" @click="speakLang = 'Chinese';getSpeechVoice();lang === 'zh-tw' ? translate() : wywTranslate()">
             翻譯，並用中文發音
           </div>
+        </div>
+      </article>
+      <article class="main-wrapper">
+        <div class="description">
+          <div>＊好消息！目前「Shai3-Nai1」翻譯機已提供詞彙提交功能囉！快來試試看吧！＊</div><br><br>
+
+          <a class="button" href="https://forms.gle/yrQ2psN4u99iFEiD9" target="_blank">我要提交詞彙</a>
         </div>
       </article>
     </section>
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import dictionary from './../src/assets/dictionary/zh-tw.json'
+// import dictionary from './../src/assets/dictionary/zh-tw.json'
 import axios from 'axios'
 
 export default {
@@ -71,20 +78,42 @@ export default {
       speakLang: 'Chinese',
       text: '',
       traslateText: '',
-      dictionary: dictionary,
+      dictionary: {},
       regex: '',
       lang: 'zh-tw',
       voice: ''
     }
   },
   mounted () {
-    this.culcRegex()
+    this.loadDictionary(
+      this.getTranslateRegex
+    )
     window.speechSynthesis.addEventListener('voiceschanged', this.getSpeechVoice)
   },
   destroyed () {
     window.speechSynthesis.removeEventListener('voiceschanged', this.getSpeechVoice)
   },
   methods: {
+    loadDictionary (callback) {
+      const dictionarySourceURL = 'https://spreadsheets.google.com/feeds/list/1iyHOIQN_6YVHyeG_exWA6sUZJsF2yQV5WI9KDIJsuRU/1/public/values?alt=json'
+      fetch(dictionarySourceURL)
+        .then(res => res.json())
+        .then(res => {
+          const rawData = res.feed.entry
+          rawData.forEach(cell => {
+            const chineseText = cell['gsx$中文詞彙'].$t
+            const shanaiText = cell['gsx$shai3-nai1詞彙'].$t
+
+            this.dictionary[chineseText] = shanaiText
+          })
+
+          this.dictionary[''] = '' // 空字串也要算在翻譯機內，但 Google Spread Sheet 無法使用空字串，因此需要自行加入字典檔
+
+          if ((typeof callback) === 'function') {
+            callback()
+          }
+        })
+    },
     speakText () {
       const utterance = new SpeechSynthesisUtterance()
       const text = this.traslateText.replace(/[～|！|♥|？]/g, '')
@@ -118,7 +147,6 @@ export default {
       }
     },
     translate () {
-      console.log('enter')
       const regex = new RegExp(this.regex, 'g')
       let newText = String(this.text)
 
@@ -163,12 +191,14 @@ export default {
           console.error(err)
         })
     },
-    culcRegex () {
+    getTranslateRegex () {
       let newRegex = this.regex
+
       for (const i in this.dictionary) {
         newRegex += i + '|'
       }
-      this.regex = newRegex + ''
+
+      this.regex = newRegex
     }
 
   }
@@ -208,20 +238,21 @@ export default {
   background: $main-dark-color;
   color:$main-font-color;
   .navbar-title {
-    font-size: rem(24px);
-    padding: rem(18px) rem(24px);
+    font-size: rem(20px);
+    padding: rem(8px) rem(16px);
     letter-spacing: rem(8px);
-    line-height: rem(18px);
+    line-height: rem(16px);
+    white-space: nowrap;
   }
   .navbar-item-list {
     display:flex;
     align-items: center;
   }
   .navbar-item {
-    padding: rem(18px) rem(24px);
-    font-size: rem(18px);
+    padding: rem(8px) rem(8px);
+    font-size: rem(16px);
     transition: 0.5s;
-    line-height: rem(18px);
+    line-height: rem(16px);
     cursor: pointer;
     &:hover {
       background: $main-darker-color;
@@ -243,13 +274,13 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items:center;
-  font-size: rem(18px);
-  padding:rem(24px) rem(16px);
+  font-size: rem(16px);
+  padding:rem(8px) rem(8px);
   height: rem(200px);
   text-align: center;
   color: $main-font-color;
   .description {
-    margin: rem(24px) 0;
+    margin: rem(10px) 0;
   }
 }
 
@@ -273,9 +304,9 @@ export default {
       overflow: hidden;
       .block-title {
         text-align: left;
-        padding-bottom: rem(8px);
-        margin-bottom: rem(24px);
+        padding-bottom: rem(12px);
         .lang {
+          cursor: pointer;
           padding: rem(4px) rem(8px);
           border: rem(2px) solid $main-font-color;
           border-radius: rem(4px);
@@ -292,11 +323,12 @@ export default {
         width:100%;
         box-sizing: border-box;
         min-height: rem(200px);
+        background: transparent;
         background:$second-lightcolor;
         padding: rem(12px);
         color: $main-font-color;
         font-weight: bold;
-        font-size: rem(18px);
+        font-size: rem(16px);
         line-height: rem(24px);
       }
       textarea {
@@ -308,7 +340,7 @@ export default {
     }
   }
 }
-.button-translate {
+.button {
   padding: rem(8px) rem(16px);
   border: rem(2px) solid $main-font-color;
   border-radius: rem(4px);
