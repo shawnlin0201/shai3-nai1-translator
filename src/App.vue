@@ -33,6 +33,7 @@
               <span class="lang" :class="{'active': lang === 'zh-tw'}" @click="lang = 'zh-tw'">正體中文</span>
               <span class="lang" :class="{'active': lang === 'wyw'}"  @click="lang = 'wyw'">文言文</span>
             </div>
+            <div class="block-title">＊使用文言文翻譯功能前請先點此<a class="button button-small" href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">開通權限</a></div>
             <textarea class="block-description" wrap="physical" v-model="text" placeholder="輸入內容，點選翻譯，立刻學習「Shai3-Nai1」體！">
             </textarea>
           </div>
@@ -70,6 +71,7 @@
 <script>
 // import dictionary from './../src/assets/dictionary/zh-tw.json'
 import axios from 'axios'
+import { getData } from './google-sheet'
 
 export default {
   name: 'App',
@@ -95,24 +97,21 @@ export default {
   },
   methods: {
     loadDictionary (callback) {
-      const dictionarySourceURL = 'https://spreadsheets.google.com/feeds/list/1iyHOIQN_6YVHyeG_exWA6sUZJsF2yQV5WI9KDIJsuRU/1/public/values?alt=json'
-      fetch(dictionarySourceURL)
-        .then(res => res.json())
-        .then(res => {
-          const rawData = res.feed.entry
-          rawData.forEach(cell => {
-            const chineseText = cell['gsx$中文詞彙'].$t
-            const shanaiText = cell['gsx$shai3-nai1詞彙'].$t
+      const that = this
+      const docID = '1iyHOIQN_6YVHyeG_exWA6sUZJsF2yQV5WI9KDIJsuRU'
+      const sheetID = '1552709129'
+      getData(docID, sheetID, function (res) {
+        res.forEach(raw => {
+          const chineseText = raw[1]
+          const shanaiText = raw[2]
 
-            this.dictionary[chineseText] = shanaiText
-          })
-
-          this.dictionary[''] = '' // 空字串也要算在翻譯機內，但 Google Spread Sheet 無法使用空字串，因此需要自行加入字典檔
-
-          if ((typeof callback) === 'function') {
-            callback()
-          }
+          that.dictionary[chineseText] = shanaiText
         })
+
+        if ((typeof callback) === 'function') {
+          callback()
+        }
+      })
     },
     speakText () {
       const utterance = new SpeechSynthesisUtterance()
@@ -149,11 +148,10 @@ export default {
     translate () {
       const regex = new RegExp(this.regex, 'g')
       let newText = String(this.text)
-
       newText = newText
-        .replace(regex, matched => this.dictionary[matched])
+        .replace(regex, matched => this.dictionary[matched] || '')
         .replace(/\n/g, '<br>')
-
+      console.log('this.dictionary', this.dictionary)
       this.traslateText = newText
       this.speakText()
     },
@@ -180,7 +178,7 @@ export default {
           let newText = String(result)
 
           newText = newText
-            .replace(regex, matched => this.dictionary[matched])
+            .replace(regex, matched => this.dictionary[matched] || '')
             .replace(/\n/g, '<br>')
 
           this.traslateText = newText
@@ -193,7 +191,6 @@ export default {
     },
     getTranslateRegex () {
       let newRegex = this.regex
-
       for (const i in this.dictionary) {
         newRegex += i + '|'
       }
@@ -350,6 +347,10 @@ export default {
   color: white;
   background: $main-font-color;
   cursor: pointer;
+  &-small {
+    padding: rem(2px) rem(1px);
+    margin: rem(4px) rem(8px);
+  }
 }
 .footer-wrapper {
   position:fixed;
