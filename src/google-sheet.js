@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { GoogleSpreadsheet } = require('google-spreadsheet')
-const privateKey = process.env.VUE_APP_PRIVATE_KEY
+const privateKey = process.env.VUE_APP_PRIVATE_KEY.replace(/\\n/g, '\n')
 const privateKeyId = process.env.VUE_APP_PRIVATE_KEY_ID
 const credentials = {
   type: 'service_account',

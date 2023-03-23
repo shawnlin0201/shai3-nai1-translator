@@ -151,7 +151,6 @@ export default {
       newText = newText
         .replace(regex, matched => this.dictionary[matched] || '')
         .replace(/\n/g, '<br>')
-      console.log('this.dictionary', this.dictionary)
       this.traslateText = newText
       this.speakText()
     },
