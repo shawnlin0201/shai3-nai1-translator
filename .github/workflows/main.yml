@@ -8,6 +8,8 @@ jobs:
     name: Build and deploy gh-pages
     env:
       MY_SECRET   : ${{secrets.commit_secret}}
+      VUE_APP_PRIVATE_KEY   : ${{secrets.VUE_APP_PRIVATE_KEY}}
+      VUE_APP_PRIVATE_KEY_ID   : ${{secrets.VUE_APP_PRIVATE_KEY_ID}}
       USER_NAME   : Shawn Lin
       USER_EMAIL  : shawnlin0201@gmail.com
       PUBLISH_DIR : ./dist
